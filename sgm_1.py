@@ -19,7 +19,6 @@ included in the SGM 22/10
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from pandas.plotting import table
 from matplotlib.ticker import ScalarFormatter
 import matplotlib as mpl
 
@@ -37,7 +36,7 @@ def main():
 
     # CME Halo Flag - reindexing to get the desired order (increasing in halo flag)
     halo_counts = df['cme_halo'].value_counts()
-    halo_counts = halo_counts.reindex(index = ['I','II','III', 'IV'])
+    halo_counts = halo_counts.reindex(index = ['I','II','III','IV'])
 
     # Some Pie Chart properties
     my_colours = ['cornflowerblue','lightcoral','palegreen','sandybrown']
