@@ -57,7 +57,7 @@ def main():
     glux = df[['goes_flux']]
 
     # There are some zero values in area and spot column ---> converting to NaNs and removing those rows
-    dfs.srs_area = dfs.srs_area.replace({0: np.nan})
+    dfs['srs_area'].replace(0, np.nan, regex=True)
 
     # Removing the rows containing any NaN values
     dfs = dfs.dropna(how='any')
