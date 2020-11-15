@@ -6,7 +6,7 @@ pbreslin@tcd.ie
 ------------
 Last Update:
 ------------
-2020 November 14
+2020 November 15
 
 Description:
 ------------
@@ -39,8 +39,8 @@ def main():
     # Removing the rows containing any NaN values
     dfs = dfs.dropna(how='any')
 
-    # Reo-rganising the indicies
-    dfs = dfs.reset_index()
+    # Reindexing
+    dfs = dfs.reset_index(drop=True)
 
     # Converting string Hale values to a float
     dfs["srs_hale"] = dfs["srs_hale"].astype(float)
@@ -49,43 +49,63 @@ def main():
     dfs["srs_area"] = dfs["srs_area"].astype(float)
 
     # Removing the rows that contain zeros
-    dfs_nz = dfs[(dfs[['srs_area']] != 0).all(axis=1)]
+    dfs = dfs[(dfs[['srs_area']] != 0).all(axis=1)]
 
     # Re-indexing once again
-    dfs_nz = dfs_nz.reset_index()
+    dfs = dfs.reset_index(drop=True)
 
     # Logging the goes_flux and srs area for plotting
-    dfs_nz['goes_flux'] = np.log10(dfs_nz['goes_flux'])
-    dfs_nz['srs_area'] = np.log10(dfs_nz['srs_area'])
+    dfs['goes_flux'] = np.log10(dfs['goes_flux'])
+    dfs['srs_area'] = np.log10(dfs['srs_area'])
+
+    # Want to separate each class so that we can make each one a specific symbol
+    a = dfs.loc[dfs['srs_hale'] == 1.0]     # alpha
+    b = dfs.loc[dfs['srs_hale'] == 2.0]     # beta
+    bg = dfs.loc[dfs['srs_hale'] == 3.0]    # beta-gamma
+    bd = dfs.loc[dfs['srs_hale'] == 4.0]    # beta-delta
+    bgd = dfs.loc[dfs['srs_hale'] == 5.0]   # beta-gamma-delta
+    gd = dfs.loc[dfs['srs_hale'] == 6.0]    # gamma-delta
 
     # Setting Hale Class colours
-    cmap = mpl.colors.ListedColormap(['gold', 'crimson', 'black', 'royalblue', 'mediumseagreen', 'aqua'])
+    cmap = mpl.colors.ListedColormap(['crimson', 'darkblue', 'darkcyan', 'magenta', 'darkorange', 'black'])
     bounds = [1, 2, 3, 4, 5, 6, 7]
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
     # Plotting
-    a = plt.figure(figsize=[16, 12], facecolor='white')
-    sct1 = plt.scatter(x=dfs_nz['srs_area'], y=dfs_nz['goes_flux'], c=dfs_nz['srs_hale'], alpha=0.8, cmap=cmap,
-                       norm=norm)
+    p1 = plt.figure(figsize=[16, 12], facecolor='white')
+
+    s1 = plt.scatter(x=a['srs_area'], y=a['goes_flux'], c=a['srs_hale'],
+                     alpha=0.8, marker='o', cmap=cmap, norm=norm, label=r'$\alpha$', s=70)
+    s2 = plt.scatter(x=b['srs_area'], y=b['goes_flux'], c=b['srs_hale'],
+                     alpha=0.8, marker='+', cmap=cmap, norm=norm, label=r'$\beta$', s=70)
+    s3 = plt.scatter(x=bg['srs_area'], y=bg['goes_flux'], c=bg['srs_hale'],
+                     alpha=0.8, marker='v', cmap=cmap, norm=norm, label=r'$\beta \gamma$', s=70)
+    s4 = plt.scatter(x=bd['srs_area'], y=bd['goes_flux'], c=bd['srs_hale'],
+                     alpha=0.8, marker='x', cmap=cmap, norm=norm, label=r'$\beta \delta$', s=70)
+    s5 = plt.scatter(x=bgd['srs_area'], y=bgd['goes_flux'], c=bgd['srs_hale'],
+                     alpha=0.8, marker='*', cmap=cmap, norm=norm, label=r'$\beta \gamma \delta$', s=70)
+    s6 = plt.scatter(x=gd['srs_area'], y=gd['goes_flux'], c=gd['srs_hale'],
+                     alpha=0.8, marker='s', cmap=cmap, norm=norm, label=r'$\gamma \delta$', s=70)
+
     plt.title('Flare GOES flux vs. SRS Sunspot Group Area', fontsize=18)
-    plt.xlabel("log10 SRS Area [m.s.h]", fontsize=14)
-    plt.ylabel("log10 GOES Flux [Wm$^{-2}$]", fontsize=14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.xlabel("log10 SRS Area [m.s.h]", fontsize=16)
+    plt.ylabel("log10 GOES Flux [Wm$^{-2}$]", fontsize=16)
+    plt.xticks(fontsize=16)
+    plt.yticks(fontsize=16)
 
     # Legend
-    handles, labels = sct1.legend_elements()
-    labels = [r'$\alpha$', r'$\beta$',
-              r'$\beta - \gamma$',
-              r'$\beta - \delta$',
-              r'$\beta - \gamma - \delta$',
-              r'$\gamma - \delta$']
-    leg = plt.legend(handles, labels, loc="best", title="Hale Class", fontsize=14)
-    plt.setp(leg.get_title(), fontsize=14)
+    leg = plt.legend(loc="best", title="Hale Class", fontsize=18)
+    plt.setp(leg.get_title(), fontsize=18)
+    leg.legendHandles[0].set_color('crimson')
+    leg.legendHandles[1].set_color('darkblue')
+    leg.legendHandles[2].set_color('darkcyan')
+    leg.legendHandles[3].set_color('magenta')
+    leg.legendHandles[4].set_color('darkorange')
+    leg.legendHandles[5].set_color('black')
 
-    # plt.savefig('flux_srs_area.png', dpi=300, bbox_inches="tight", pad_inches=1)
+    #plt.savefig('flux_area_rev.png', dpi=300, bbox_inches="tight", pad_inches=1)
 
-    a.show()
+    p1.show()
 
 
 
