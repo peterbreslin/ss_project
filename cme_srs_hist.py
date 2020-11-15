@@ -6,11 +6,11 @@ pbreslin@tcd.ie
 ------------
 Last Update:
 ------------
-2020 November 14
+2020 November 15
 
 Description:
 ------------
-Code to make validation histogram plots of various properties
+Code to make validation histogram plots of various CME and SRS properties
 
 """
 
@@ -23,7 +23,7 @@ import matplotlib.ticker as ticker
 def main():
     """ Loads the custom solar stats catalogue,
         reorganises the dataframe,
-        and plots various validation histogram plots (from HELCATS paper) """
+        and makes CME and SRS histogram plots (from HELCATS paper) """
 
     # Defining the path for the dataframe
     custom_df = 'C:/Users/Peter/py_projects/solar_stats/custom_df.p'
@@ -91,7 +91,7 @@ def main():
     ax2.set_xlabel('CME Angle [$^{\circ}$]')
 
     plt.tight_layout()
-    #plt.savefig('cme_hist_perc.png', dpi=300, bbox_inches="tight", pad_inches=1)
+    #plt.savefig('width_angle_hist.png', dpi=300, bbox_inches="tight", pad_inches=1)
     a.show()
 
     #=================================================================================================================
@@ -109,7 +109,7 @@ def main():
     ax4.set_xlabel('CME KE [erg]')
 
     plt.tight_layout()
-    #plt.savefig('cme_hist_perc2.png', dpi=300, bbox_inches="tight", pad_inches=1)
+    #plt.savefig('mass_ke_hist.png', dpi=300, bbox_inches="tight", pad_inches=1)
     b.show()
 
     #=================================================================================================================
@@ -122,7 +122,7 @@ def main():
              bins=30)
     ax5.yaxis.set_major_formatter(ticker.PercentFormatter(1))
     ax5.set_xlabel('SRS Number')
-    ax5.yaxis.set_tick_params(labelleft=True)
+    ax5.set_ylabel('Frequency')
 
     ax6.hist(dfs['srs_area'], edgecolor='white', align='mid', color='rebeccapurple',
              weights=np.ones(len(dfs['srs_area'])) / len(dfs['srs_area']),
@@ -132,7 +132,7 @@ def main():
     ax6.yaxis.set_tick_params(labelleft=True)
 
     plt.tight_layout()
-    #plt.savefig('srs_hist_perc.png', dpi=300, bbox_inches="tight", pad_inches=1)
+    #plt.savefig('spots_area_hist.png', dpi=300, bbox_inches="tight", pad_inches=1)
     c.show()
 
     #=================================================================================================================
@@ -159,6 +159,8 @@ def main():
     plt.tight_layout()
     #plt.savefig('flux_speed_hist.png', dpi=300, bbox_inches="tight", pad_inches=1)
     d.show()
+
+    #=================================================================================================================
 
 
 if __name__ == '__main__':
