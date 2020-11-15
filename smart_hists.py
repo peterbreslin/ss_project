@@ -161,34 +161,13 @@ def main():
     ax8.set_xlabel('SMART PIL length [Mm]')
     ax8.set_ylabel('Frequency')
 
-    ax9.hist(np.log10(wlsg['smart_wlsg']), edgecolor='white', align='mid', bins=30, color='mediumvioletred')
+    ax9.hist(dfs['smart_bipole_separation'], edgecolor='white', align='mid', bins=30, color='mediumvioletred')
     ax9.set_yscale('log')
-    ax9.set_xlabel('SMART WL$_{SG}$ [G]')
+    ax9.set_xlabel('SMART bipole separation [Mm]')
 
     plt.tight_layout()
+    #plt.savefig('psl_bip_loghist.png', dpi=300, bbox_inches="tight", pad_inches=1)
     e.show()
-
-    #=================================================================================================================
-
-    # Plotting bipole separation and R value together
-    f, (ax10, ax11) = plt.subplots(1, 2, figsize=(15, 5), facecolor='white', sharey=True)
-
-    ax10.hist(dfs['smart_bipole_separation'], edgecolor='white', align='mid', color='mediumvioletred',
-             weights=np.ones(len(dfs['smart_bipole_separation'])) / len(dfs['smart_bipole_separation']),
-             bins=25)
-    ax10.yaxis.set_major_formatter(ticker.PercentFormatter(1))
-    ax10.set_xlabel('SMART bipole separation [Mm]')
-    ax10.set_ylabel('Frequency')
-
-    ax11.hist(np.log10(dfs['smart_r_value']), edgecolor='white', align='mid', color='mediumvioletred',
-             weights=np.ones(len(dfs['smart_r_value'])) / len(dfs['smart_r_value']),
-             bins=30)
-    ax11.yaxis.set_major_formatter(ticker.PercentFormatter(1))
-    ax11.yaxis.set_tick_params(labelleft=True)
-    ax11.set_xlabel('SMART R value [Mx]')
-
-    plt.tight_layout()
-    f.show()
 
     #=================================================================================================================
 
