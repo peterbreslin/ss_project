@@ -19,6 +19,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+import datetime as dt
+from datetime import timedelta
 
 def main():
     """ Loads the custom solar stats catalogue,
@@ -162,8 +164,44 @@ def main():
 
     #=================================================================================================================
 
+    # Finding the duration of each flare
+    dft = df[['flare_start_time', 'flare_end_time']]
+
+    # Removing the rows containing any NaN values
+    dft = dft.dropna(how='any')
+
+    # Reindexing
+    dft = dft.reset_index(drop=True)
+
+    # Function to convert time difference between the UTC times into minutes
+    def calculate_flare_duration(data_start, data_end):
+        """Get flare duration in minutes"""
+        data_out = abs(data_end - data_start)
+        for i in range(len(data_out)):
+            try:
+                data_out[i] = (data_out[i]).total_seconds() / 60.
+            except AttributeError:
+                continue
+        return data_out
+
+    flare_duration = calculate_flare_duration(dft['flare_start_time'], dft['flare_end_time'])
+
+    # Plotting
+    e, ax9 = plt.subplots(figsize=(10, 5), facecolor='white')
+
+    ax9.hist(flare_duration, edgecolor='white', align='mid', color='palevioletred',
+             weights=np.ones(len(flare_duration)) / len(flare_duration),
+             bins=30)
+    ax9.yaxis.set_major_formatter(ticker.PercentFormatter(1))
+    ax9.set_xlabel('Flare duration [minutes]')
+    ax9.set_ylabel('Frequency')
+
+    plt.tight_layout()
+    #plt.savefig('flare_duration_hist.png', dpi=300, bbox_inches="tight", pad_inches=1)
+    e.show()
+
+    #=================================================================================================================
+
 
 if __name__ == '__main__':
     main()
-
-
