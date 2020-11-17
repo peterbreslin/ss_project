@@ -176,7 +176,7 @@ def main():
     # Function to convert time difference between the UTC times into minutes
     def calculate_flare_duration(data_start, data_end):
         """Get flare duration in minutes"""
-        data_out = abs(data_end - data_start)
+        data_out = data_end - data_start
         for i in range(len(data_out)):
             try:
                 data_out[i] = (data_out[i]).total_seconds() / 60.
